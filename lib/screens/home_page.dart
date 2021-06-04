@@ -46,28 +46,75 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Food Recipe',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 30.0,
-          ),
-        ),
-        elevation: 0.0,
-        backgroundColor: Colors.white,
-      ),
-      body: Container(
-        child: ListView.builder(
-            itemCount: _recipes.length,
-            itemBuilder: (context, index) {
-              final recipe = _recipes[index];
-              return ListTile(
-                title: RecipeCard(recipe: recipe),
-              );
-            }),
-      ),
+      body: (_recipes.length == 0)
+          ? Container(
+              child: Center(
+              child: Text('Loading recipes'),
+            ))
+          : CustomScrollView(slivers: [
+              SliverAppBar(
+                backgroundColor: Colors.white,
+                pinned: true,
+                expandedHeight: 300.0,
+                flexibleSpace: FlexibleSpaceBar(
+                    title: Text(
+                      'Cooking Recipes',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    background: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          'assets/images/home-page-image.jpg',
+                          fit: BoxFit.cover,
+                        )
+                      ],
+                    )),
+              ),
+
+              //Padding widget can not be  used so use SliverList for padding
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return Container(
+                    height: 80.0,
+                  );
+                }, childCount: 1),
+              ),
+
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 280.0),
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  final recipe = _recipes[index];
+                  return RecipeCard(recipe: recipe);
+                }, childCount: _recipes.length),
+              )
+
+              // SliverFixedExtentList(
+              //   itemExtent: 250.0,
+              //   delegate: SliverChildBuilderDelegate(
+              //       (BuildContext context, int index) {
+              //
+              //     final recipe = _recipes[index];
+              //     return RecipeCard(recipe: recipe);
+              //   }, childCount: _recipes.length),
+              // )
+            ]
+
+              // : ListView.builder(
+              //     itemCount: _recipes.length,
+              //     itemBuilder: (context, index) {
+              //       final recipe = _recipes[index];
+              //       return ListTile(
+              //         title: RecipeCard(recipe: recipe),
+              //       );
+              //     }),
+              ),
     );
   }
 }

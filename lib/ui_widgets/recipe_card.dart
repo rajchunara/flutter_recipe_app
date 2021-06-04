@@ -11,23 +11,56 @@ class RecipeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        padding: EdgeInsets.only(bottom: 8.0),
-        child: Column(
-          children: [
-            Image.network(
-              recipe.strMealThumb,
-              height: 180.0,
-              width: 180.0,
+        // color: Colors.red,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    recipe.strMealThumb,
+                  ),
+                ),
+                Positioned(
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
+                        Colors.black.withAlpha(0),
+                        Colors.black.withAlpha(0),
+                        Colors.black38,
+                        Colors.black54
+                      ],
+                    )),
+                  ),
+                ),
+                Positioned(
+                  bottom: 10.0,
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 180.0,
+                        child: Text(
+                          recipe.strMeal,
+                          style: TextStyle(color: Colors.white, fontSize: 20.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(recipe.strMeal),
-            )
-          ],
+          ),
         ),
       ),
       onTap: () {
-        print(recipe.strMeal);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -36,6 +69,45 @@ class RecipeCard extends StatelessWidget {
                   )),
         );
       },
+    );
+  }
+
+  Padding recipeCard() {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 10.0,
+                  spreadRadius: -1.0,
+                  offset: Offset(10.0, 10.0))
+            ]),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          child: Container(
+            child: Stack(
+              children: [
+                Image.network(
+                  recipe.strMealThumb,
+                  fit: BoxFit.fitWidth,
+                ),
+                Positioned(
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(recipe.strMeal),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

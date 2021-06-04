@@ -25,7 +25,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   void initState() {
     super.initState();
     detailedRecipeURL =
-        'https://www.themealdb.com/api/json/v1/1/lookup.php?i=$recipeID';
+        "https://www.themealdb.com/api/json/v1/1/lookup.php?i=$recipeID";
 
     _fetchRecipe();
   }
@@ -40,7 +40,6 @@ class _RecipeDetailsState extends State<RecipeDetails> {
       Iterable mealList = result["meals"];
 
       setState(() {
-        print('state is setting');
         _detailedRecipe = DetailedRecipe.fromJson(mealList.first);
       });
     } else {
@@ -48,20 +47,88 @@ class _RecipeDetailsState extends State<RecipeDetails> {
     }
   }
 
+  Widget ImageContainer() {
+    return _detailedRecipe.strMealThumb == ''
+        ? Container(
+            width: double.infinity,
+            height: 500.0,
+            color: Colors.white,
+          )
+        : Image.network(
+            _detailedRecipe.strMealThumb,
+            fit: BoxFit.fill,
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_detailedRecipe.strMeal),
-        leading: GestureDetector(
-          child: Icon(Icons.arrow_back),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: Container(
-        child: Center(child: Text(_detailedRecipe.strInstructions)),
+        child: ListView(
+          children: [
+            Stack(
+              children: [
+                ImageContainer(),
+                Positioned(
+                  child: Container(
+                    height: 100.0,
+                    padding: const EdgeInsets.all(15.0),
+                    alignment: Alignment.bottomCenter,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        end: Alignment.topCenter,
+                        begin: Alignment.bottomCenter,
+                        colors: <Color>[
+                          Colors.black.withAlpha(0),
+                          Colors.black12,
+                          Colors.black54
+                        ],
+                      ),
+                    ),
+                    // child: Text(
+                    //   _detailedRecipe.strMeal,
+                    //   style: TextStyle(color: Colors.white, fontSize: 20.0),
+                    // ),
+                  ),
+                ),
+                Positioned(
+                  top: 20.0,
+                  left: 20.0,
+                  child: GestureDetector(
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 30.0,
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                Positioned(
+                  bottom: 0.0,
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    width: width,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(
+                          30.0,
+                        ),
+                        topRight: Radius.circular(30.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Text(_detailedRecipe.strInstructions)
+          ],
+        ),
       ),
     );
   }
