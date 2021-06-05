@@ -13,7 +13,7 @@ class RecipeCard extends StatelessWidget {
       child: Container(
         // color: Colors.red,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 17.0, vertical: 17.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: Stack(
@@ -46,7 +46,7 @@ class RecipeCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        width: 180.0,
+                        width: 150.0,
                         child: Text(
                           recipe.strMeal,
                           style: TextStyle(color: Colors.white, fontSize: 20.0),

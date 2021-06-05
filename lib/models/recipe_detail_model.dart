@@ -7,6 +7,8 @@ class DetailedRecipe extends BriefRecipe {
   String strMeal;
   String strMealThumb;
   String idMeal;
+  String? strTags;
+  Map<String, String>? ingridentsList;
 
   DetailedRecipe(
       {this.strMeal = '',
@@ -14,7 +16,8 @@ class DetailedRecipe extends BriefRecipe {
       this.idMeal = '',
       this.strArea = '',
       this.strCategory = '',
-      this.strInstructions = ''})
+      this.strInstructions = '',
+      this.strTags = ''})
       : super(strMeal: strMeal, strMealThumb: strMealThumb, idMeal: idMeal);
 
   factory DetailedRecipe.fromJson(Map<String, dynamic> json) {
@@ -24,6 +27,7 @@ class DetailedRecipe extends BriefRecipe {
         idMeal: json['idMeal'],
         strArea: json['strArea'],
         strCategory: json['strCategory'],
-        strInstructions: json['strInstructions']);
+        strInstructions: json['strInstructions'],
+        strTags: json['strTags'] ?? '');
   }
 }

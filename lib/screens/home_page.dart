@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_recipe/models/brief_recipe.dart';
@@ -54,67 +55,76 @@ class _HomePageState extends State<HomePage> {
               child: Center(
               child: Text('Loading recipes'),
             ))
-          : CustomScrollView(slivers: [
-              SliverAppBar(
-                backgroundColor: Colors.white,
-                pinned: true,
-                expandedHeight: 300.0,
-                flexibleSpace: FlexibleSpaceBar(
-                    title: Text(
-                      'Cooking Recipes',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.asset(
-                          'assets/images/home-page-image.jpg',
-                          fit: BoxFit.cover,
-                        )
-                      ],
-                    )),
-              ),
+          : SafeArea(
+              child: CustomScrollView(slivers: [
+                SliverAppBar(
+                  collapsedHeight: 80,
+                  backgroundColor: Colors.white,
+                  pinned: true,
+                  expandedHeight: 300.0,
+                  flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: true,
+                      title: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        child: TextField(
+                          // style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 15.0),
+                            fillColor: Colors.white,
+                            filled: true,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30.0),
+                              ),
+                              borderSide: BorderSide(width: 0),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30.0),
+                              ),
+                              borderSide: BorderSide(width: 0),
+                            ),
+                            enabled: true,
+                            hintStyle: TextStyle(fontSize: 15.0),
+                            hintText: 'Enter a search recipe',
+                          ),
+                        ),
+                      ),
+                      background: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.asset(
+                            'assets/images/home-page-image.jpg',
+                            fit: BoxFit.cover,
+                          )
+                        ],
+                      ),),
+                ),
 
-              //Padding widget can not be  used so use SliverList for padding
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  return Container(
-                    height: 80.0,
-                  );
-                }, childCount: 1),
-              ),
+                //Padding widget can not be  used so use SliverList for padding
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return Container(
+                      height: 50.0,
+                    );
+                  }, childCount: 1),
+                ),
 
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 280.0),
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  final recipe = _recipes[index];
-                  return RecipeCard(recipe: recipe);
-                }, childCount: _recipes.length),
-              )
-
-              // SliverFixedExtentList(
-              //   itemExtent: 250.0,
-              //   delegate: SliverChildBuilderDelegate(
-              //       (BuildContext context, int index) {
-              //
-              //     final recipe = _recipes[index];
-              //     return RecipeCard(recipe: recipe);
-              //   }, childCount: _recipes.length),
-              // )
-            ]
-
-              // : ListView.builder(
-              //     itemCount: _recipes.length,
-              //     itemBuilder: (context, index) {
-              //       final recipe = _recipes[index];
-              //       return ListTile(
-              //         title: RecipeCard(recipe: recipe),
-              //       );
-              //     }),
-              ),
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 280.0),
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    final recipe = _recipes[index];
+                    return RecipeCard(recipe: recipe);
+                  }, childCount: _recipes.length),
+                )
+              ]),
+            ),
     );
   }
 }
