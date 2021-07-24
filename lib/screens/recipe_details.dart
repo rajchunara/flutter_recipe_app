@@ -128,16 +128,20 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(_detailedRecipe.strArea,
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 15)),
+                              Text(
+                                _detailedRecipe.strArea,
+                                style: TextStyle(
+                                    color: Colors.green[900], fontSize: 16),
+                              ),
                               VerticalDivider(
                                 color: Colors.grey,
                                 width: 50.0,
                               ),
-                              Text(_detailedRecipe.strCategory,
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 15)),
+                              Text(
+                                _detailedRecipe.strCategory,
+                                style: TextStyle(
+                                    color: Colors.green[900], fontSize: 16),
+                              ),
                             ],
                           ),
                         ),
