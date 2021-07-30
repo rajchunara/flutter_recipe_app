@@ -49,12 +49,9 @@ class _RecipeDetailsState extends State<RecipeDetails> {
 
   Widget imageContainer() {
     return _detailedRecipe.strMealThumb.length != 0
-        ? Container(
-            width: double.infinity,
-            height: 500.0,
-            color: Colors.white,
-            child: Center(
-              child: Text('Loading Recipe...'),
+        ? Center(
+            child: CircularProgressIndicator(
+              color: Colors.green,
             ),
           )
         : Image.network(
@@ -69,12 +66,13 @@ class _RecipeDetailsState extends State<RecipeDetails> {
 
     return Scaffold(
       body: _detailedRecipe.strMeal == ''
-          ? Container(
-              child: Center(
-                child: Text('Loading recipe....'),
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Colors.green,
               ),
             )
           : SafeArea(
+            
               child: CustomScrollView(
                 slivers: [
                   SliverAppBar(

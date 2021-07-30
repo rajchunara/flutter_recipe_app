@@ -3,9 +3,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_recipe/models/brief_recipe.dart';
+import 'package:flutter_recipe/providers/recipe_provider.dart';
 import 'package:flutter_recipe/ui_widgets/app_bar_home_screen.dart';
 import 'package:flutter_recipe/ui_widgets/recipe_card.dart';
+import 'package:flutter_recipe/ui_widgets/recipe_categories_list.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -42,10 +46,12 @@ class _HomePageState extends State<HomePage> {
       final result = jsonDecode(response.body);
       Iterable catgList = result["meals"];
       setState(() {
-        _categoriesList = catgList.map((categoryJson) {
-          print(categoryJson["strCategory"]);
-          return categoryJson["strCategory"];
-        }).toList();
+        _categoriesList = [
+          'All',
+          ...catgList.map((categoryJson) {
+            return categoryJson["strCategory"];
+          }).toList()
+        ];
       });
     } else {
       throw Exception('Failed to load categories list');
@@ -75,51 +81,66 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      body: ((_recipes.length == 0 && _categoriesList == null))
-          ? Center(child: CircularProgressIndicator())
-          : CustomScrollView(slivers: [
-              AppBarHomeScreen(),
+    return Consumer<RecipeProvider>(
+      builder: (context, recipeProvider, child) {
+        return Scaffold(
+          body: ((_recipes.length == 0 && recipeProvider.categoryList == null))
+              ? Center(
+                  child: CircularProgressIndicator(
+                  color: Colors.green,
+                ))
+              : CustomScrollView(slivers: [
+                  AppBarHomeScreen(),
 
-              //Padding widget can not be  used so use SliverList for padding
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  return Container(
-                      color: Colors.green,
-                      height: 60.0,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            height: 20,
-                            width: 100,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(horizontal: 7.0),
-                            child: Text(
-                              _categoriesList?[index],
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                            ),
-                          );
-                        },
-                        itemCount: _categoriesList?.length,
-                      ));
-                }, childCount: 1),
-              ),
+                  //Padding widget can not be  used so use SliverList for padding
+                  /* Recipe types */
+                  // SliverList(
+                  //   delegate: SliverChildBuilderDelegate(
+                  //       (BuildContext context, int index) {
+                  //     return Container(
+                  //       height: 60.0,
+                  //       child: ListView.builder(
+                  //         scrollDirection: Axis.horizontal,
+                  //         itemBuilder: (context, index) {
+                  //           return Container(
+                  //             alignment: Alignment.center,
+                  //             padding: EdgeInsets.symmetric(horizontal: 15.0),
+                  //             child: Container(
+                  //               padding: EdgeInsets.symmetric(
+                  //                   vertical: 5.0, horizontal: 10),
+                  //               child: Text(
+                  //                 _categoriesList?[index],
+                  //                 style: TextStyle(
+                  //                     fontSize: 15.0, color: Colors.white),
+                  //               ),
+                  //               decoration: BoxDecoration(
+                  //                   color: Colors.black87,
+                  //                   borderRadius: BorderRadius.all(
+                  //                       Radius.circular(15.0))),
+                  //             ),
+                  //           );
+                  //         },
+                  //         itemCount: _categoriesList?.length,
+                  //       ),
+                  //     );
+                  //   }, childCount: 1),
+                  // ),
 
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 280.0),
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  final recipe = _recipes[index];
-                  return RecipeCard(recipe: recipe);
-                }, childCount: _recipes.length),
-              )
-            ]),
+                  RecipeCategoriesList(),
+
+                  /* Recipe Grid */
+                  SliverGrid(
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 280.0),
+                    delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                      final recipe = _recipes[index];
+                      return RecipeCard(recipe: recipe);
+                    }, childCount: _recipes.length),
+                  )
+                ]),
+        );
+      },
     );
   }
 }
