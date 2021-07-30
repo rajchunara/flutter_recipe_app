@@ -22,13 +22,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late List<BriefRecipe> _recipes = <BriefRecipe>[];
-  List<dynamic>? _categoriesList;
 
   @override
   void initState() {
     super.initState();
     _fetchAllRecipes();
-    _fetchListOfCategories();
   }
 
   String categoryApiUrl =
@@ -38,25 +36,25 @@ class _HomePageState extends State<HomePage> {
       "https://www.themealdb.com/api/json/v1/1/list.php?c=list";
 
 /* Fetch all categories list */
-  void _fetchListOfCategories() async {
-    var url = Uri.parse(categoriesListURL);
-    final response = await http.get(url);
+  // void _fetchListOfCategories() async {
+  //   var url = Uri.parse(categoriesListURL);
+  //   final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      Iterable catgList = result["meals"];
-      setState(() {
-        _categoriesList = [
-          'All',
-          ...catgList.map((categoryJson) {
-            return categoryJson["strCategory"];
-          }).toList()
-        ];
-      });
-    } else {
-      throw Exception('Failed to load categories list');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     final result = jsonDecode(response.body);
+  //     Iterable catgList = result["meals"];
+  //     setState(() {
+  //       _categoriesList = [
+  //         'All',
+  //         ...catgList.map((categoryJson) {
+  //           return categoryJson["strCategory"];
+  //         }).toList()
+  //       ];
+  //     });
+  //   } else {
+  //     throw Exception('Failed to load categories list');
+  //   }
+  // }
 
 /* Fetch recipes */
   void _fetchAllRecipes() async {
