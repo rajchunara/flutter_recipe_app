@@ -23,4 +23,10 @@ class BriefRecipe {
     data['idMeal'] = this.idMeal;
     return data;
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "$strMeal $strMealThumb $idMeal";
+  }
 }
