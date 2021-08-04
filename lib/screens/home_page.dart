@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -21,13 +22,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<BriefRecipe> _recipes = <BriefRecipe>[];
+  // late List<BriefRecipe> _recipes = <BriefRecipe>[];
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchAllRecipes();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _fetchAllRecipes();
+  // }
 
   String categoryApiUrl =
       "https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood";
@@ -57,23 +58,23 @@ class _HomePageState extends State<HomePage> {
   // }
 
 /* Fetch recipes */
-  void _fetchAllRecipes() async {
-    //Convert String into Uri Object as http.get() accepts Uri
-    var url = Uri.parse(categoryApiUrl);
-    final response = await http.get(url);
+  // void _fetchAllRecipes() async {
+  //   //Convert String into Uri Object as http.get() accepts Uri
+  //   var url = Uri.parse(categoryApiUrl);
+  //   final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      Iterable recipeList = result["meals"];
-      setState(() {
-        _recipes = recipeList.map((recipe) {
-          return BriefRecipe.fromJson(recipe);
-        }).toList();
-      });
-    } else {
-      throw Exception('Failed to load Recipes');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     final result = jsonDecode(response.body);
+  //     Iterable recipeList = result["meals"];
+  //     setState(() {
+  //       _recipes = recipeList.map((recipe) {
+  //         return BriefRecipe.fromJson(recipe);
+  //       }).toList();
+  //     });
+  //   } else {
+  //     throw Exception('Failed to load Recipes');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,61 +82,48 @@ class _HomePageState extends State<HomePage> {
 
     return Consumer<RecipeProvider>(
       builder: (context, recipeProvider, child) {
+        print(recipeProvider.categoryList?.length);
+        if (recipeProvider.displayRecipeList.length > 0) {
+          // print(recipeProvider.categoryWithRecipesList);
+        }
+
         return Scaffold(
-          body: ((_recipes.length == 0 && recipeProvider.categoryList == null))
+          body: ((recipeProvider.displayRecipeList.length == 0 &&
+                  recipeProvider.categoryList == null))
               ? Center(
                   child: CircularProgressIndicator(
                   color: Colors.green,
                 ))
               : CustomScrollView(slivers: [
                   AppBarHomeScreen(),
-
-                  //Padding widget can not be  used so use SliverList for padding
-                  /* Recipe types */
-                  // SliverList(
-                  //   delegate: SliverChildBuilderDelegate(
-                  //       (BuildContext context, int index) {
-                  //     return Container(
-                  //       height: 60.0,
-                  //       child: ListView.builder(
-                  //         scrollDirection: Axis.horizontal,
-                  //         itemBuilder: (context, index) {
-                  //           return Container(
-                  //             alignment: Alignment.center,
-                  //             padding: EdgeInsets.symmetric(horizontal: 15.0),
-                  //             child: Container(
-                  //               padding: EdgeInsets.symmetric(
-                  //                   vertical: 5.0, horizontal: 10),
-                  //               child: Text(
-                  //                 _categoriesList?[index],
-                  //                 style: TextStyle(
-                  //                     fontSize: 15.0, color: Colors.white),
-                  //               ),
-                  //               decoration: BoxDecoration(
-                  //                   color: Colors.black87,
-                  //                   borderRadius: BorderRadius.all(
-                  //                       Radius.circular(15.0))),
-                  //             ),
-                  //           );
-                  //         },
-                  //         itemCount: _categoriesList?.length,
-                  //       ),
-                  //     );
-                  //   }, childCount: 1),
-                  // ),
-
                   RecipeCategoriesList(),
 
                   /* Recipe Grid */
-                  SliverGrid(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 280.0),
-                    delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      final recipe = _recipes[index];
-                      return RecipeCard(recipe: recipe);
-                    }, childCount: _recipes.length),
-                  )
+
+                  (recipeProvider.displayRecipeList.length == 0)
+                      ? SliverToBoxAdapter(
+                          child: Container(
+                            height: 200.0,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+                        )
+                      : SliverGrid(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 280.0),
+                          delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            final recipe =
+                                recipeProvider.displayRecipeList[index];
+                            return RecipeCard(recipe: recipe);
+                          },
+                              childCount:
+                                  recipeProvider.displayRecipeList.length),
+                        )
                 ]),
         );
       },

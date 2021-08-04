@@ -22,21 +22,32 @@ class RecipeCategoriesList extends StatelessWidget {
                   : ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        return Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        return GestureDetector(
+                          onTap: () {
+                            recipeProvider.displayRecipes(
+                                category: recipeProvider.categoryList![index]);
+                          },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 5.0, horizontal: 10),
-                            child: Text(
-                              recipeProvider.categoryList![index],
-                              style: TextStyle(
-                                  fontSize: 15.0, color: Colors.white),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5.0, horizontal: 10),
+                              child: Text(
+                                recipeProvider.categoryList![index],
+                                style: TextStyle(
+                                    fontSize: 15.0, color: Colors.white),
+                              ),
+                              decoration: BoxDecoration(
+                                color: (recipeProvider.categorySelected ==
+                                        recipeProvider.categoryList![index])
+                                    ? Colors.black87
+                                    : Colors.grey,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15.0),
+                                ),
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                                color: Colors.black87,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15.0))),
                           ),
                         );
                       },

@@ -11,6 +11,8 @@ class RecipeProvider extends ChangeNotifier {
   bool isLoading = false;
   List<String>? categoryList;
   List<CategoryWithRecipesList>? categoryWithRecipesList;
+  String categorySelected = "All";
+  List<BriefRecipe> displayRecipeList = [];
 
   final String _categoriesListURL =
       "https://www.themealdb.com/api/json/v1/1/list.php?c=list";
@@ -18,18 +20,43 @@ class RecipeProvider extends ChangeNotifier {
       "https://www.themealdb.com/api/json/v1/1/filter.php?c=";
 
   RecipeProvider() {
+    print("initialized");
     initializeState();
   }
 
   void initializeState() async {
     categoryWithRecipesList = <CategoryWithRecipesList>[];
     toggleLoadingState();
+
     await _fetchListOfCategories();
     await _fetchRecipesForAllCategories();
     toggleLoadingState();
+    displayRecipes();
     // categoryWithRecipesList?.forEach((element) {
-    //   print(element.toString());
+    //   print(element.category.toString());
     // });
+  }
+
+  /* List of brief recipes to display */
+  void displayRecipes({String category: 'All'}) {
+    //Change category
+    categorySelected = category;
+
+    if (category == "All") {
+      displayRecipeList = [];
+      categoryWithRecipesList?.forEach((element) {
+        List<BriefRecipe> newList = [...displayRecipeList, ...?element.recipes];
+        displayRecipeList = [...newList];
+      });
+    } else {
+      categoryWithRecipesList?.forEach((element) {
+        if (element.category == category) {
+          displayRecipeList = [...?element.recipes];
+        }
+      });
+    }
+
+    notifyListeners();
   }
 
 /* Fetch all categories list */
@@ -56,13 +83,20 @@ class RecipeProvider extends ChangeNotifier {
   /* Fetch recipes for all categories one by one */
   Future _fetchRecipesForAllCategories() async {
     if (categoryList != null || categoryList?.length != 0) {
-      categoryList?.forEach((category) async {
-        if (category == 'All') return;
-        List<BriefRecipe> recipeList = await _fetchAllRecipes(category);
-        CategoryWithRecipesList categoryWithRecipes =
-            CategoryWithRecipesList(category: category, recipes: recipeList);
-        categoryWithRecipesList?.add(categoryWithRecipes);
-      });
+      CategoryWithRecipesList allCatRec;
+      for (String category in categoryList!) {
+        if (category == 'All') {
+          allCatRec = CategoryWithRecipesList(category: "All");
+        } else {
+          print(category);
+          List<BriefRecipe> recipeList = await _fetchAllRecipes(category);
+          print(recipeList.length);
+
+          allCatRec =
+              CategoryWithRecipesList(category: category, recipes: recipeList);
+        }
+        categoryWithRecipesList?.add(allCatRec);
+      }
     }
   }
 
