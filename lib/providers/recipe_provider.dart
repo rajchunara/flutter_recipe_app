@@ -88,9 +88,7 @@ class RecipeProvider extends ChangeNotifier {
         if (category == 'All') {
           allCatRec = CategoryWithRecipesList(category: "All");
         } else {
-          print(category);
           List<BriefRecipe> recipeList = await _fetchAllRecipes(category);
-          print(recipeList.length);
 
           allCatRec =
               CategoryWithRecipesList(category: category, recipes: recipeList);
@@ -109,6 +107,16 @@ class RecipeProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
       Iterable recipeList = result["meals"];
+
+      /* Load recipes after getting recipes and notify listeners*/
+      displayRecipeList = [
+        ...displayRecipeList,
+        ...recipeList.map((recipe) {
+          return BriefRecipe.fromJson(recipe);
+        }).toList()
+      ];
+      notifyListeners();
+
       return recipeList.map((recipe) {
         return BriefRecipe.fromJson(recipe);
       }).toList();
